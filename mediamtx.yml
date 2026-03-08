@@ -1,21 +1,27 @@
 logLevel: info
 logDestinations: [stdout]
-hlsAddress: :8888
+
+# HLS na porta que o Railway expõe como HTTP (variável $PORT)
+# Railway injeta $PORT automaticamente para o domínio .up.railway.app
+hlsAddress: :${PORT:-8888}
 hlsVariant: mpegts
 hlsSegmentCount: 3
 hlsSegmentDuration: 2s
 hlsAllowOrigins: ['*']
+
+# RTMP na porta fixa — acessado via TCP Proxy do Railway
 rtmpAddress: :1935
+
 paths:
   all_others:
     runOnPublish: >-
-      curl -s -X POST
+      curl -sf -X POST
       https://nexusfilm.netlify.app/.netlify/functions/stream-webhook
       -H "Content-Type: application/json"
       -d "{\"action\":\"publish\",\"event\":\"ready\",\"path\":\"$MTX_PATH\"}"
     runOnPublishRestart: no
     runOnUnpublish: >-
-      curl -s -X POST
+      curl -sf -X POST
       https://nexusfilm.netlify.app/.netlify/functions/stream-webhook
       -H "Content-Type: application/json"
       -d "{\"action\":\"publish\",\"event\":\"unready\",\"path\":\"$MTX_PATH\"}"
