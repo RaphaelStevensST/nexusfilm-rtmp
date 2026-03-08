@@ -1,8 +1,8 @@
 logLevel: info
 logDestinations: [stdout]
 hlsAddress: :8888
-hlsVariant: fmp4
-hlsSegmentCount: 7
+hlsVariant: mpegts
+hlsSegmentCount: 3
 hlsSegmentDuration: 2s
 hlsAllowOrigins: ['*']
 rtmpAddress: :1935
