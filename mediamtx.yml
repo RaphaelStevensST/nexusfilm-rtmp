@@ -6,7 +6,7 @@ hlsVariant: lowLatency
 hlsSegmentCount: 3
 hlsSegmentDuration: 1s
 hlsPartDuration: 200ms
-hlsAllowOrigin: "*"
+hlsAllowOrigin: '*'
 rtmpAddress: :1935
 rtmpEncryption: no
 rtsp: no
