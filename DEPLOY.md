@@ -1,56 +1,66 @@
-# Deploy do Servidor RTMP no Railway
+# Deploy do Servidor RTMP no Railway (GRÁTIS)
 
-## Passo a passo
+## O que é isso?
+Este é o servidor RTMP que permite streamers usarem o OBS para transmitir
+ao vivo diretamente no NexusFilm, igual à Twitch.
 
-### 1. Criar novo projeto no Railway
-- Acesse https://railway.app
-- New Project → Deploy from GitHub (ou "Empty Service" + Dockerfile)
+Fluxo:
+  OBS → envia stream para este servidor (RTMP porta 1935)
+  Servidor → converte para HLS (.m3u8)
+  NexusFilm → lê o HLS e exibe para os espectadores
 
-### 2. Fazer upload dos arquivos
-Suba os 3 arquivos desta pasta:
-- `Dockerfile`
-- `mediamtx.yml`
-- `start.sh`
+## Passo a Passo — Deploy Grátis no Railway
 
-### 3. Configurar as Variables no Railway
-No painel do serviço → Variables, adicione:
+### 1. Crie conta no Railway
+Acesse https://railway.app e crie conta com GitHub.
 
-| Variável    | Valor  | Descrição                        |
-|-------------|--------|----------------------------------|
-| RTMP_PORT   | 1935   | Porta RTMP (mesma do TCP Proxy)  |
+### 2. Suba este servidor
+Opção A — Via GitHub:
+  1. Crie um repositório no GitHub com os arquivos desta pasta (Dockerfile + mediamtx.yml)
+  2. No Railway: New Project → Deploy from GitHub Repo
+  3. Selecione o repositório
 
-O Railway injeta `PORT` automaticamente para o HLS — não precisa configurar.
+Opção B — Via Railway CLI:
+  1. npm install -g @railway/cli
+  2. railway login
+  3. cd rtmp-server
+  4. railway init
+  5. railway up
 
-### 4. Configurar Networking (IMPORTANTE!)
-No painel do serviço → Settings → Networking:
+### 3. Configure as portas no Railway
+No painel do Railway, vá em seu serviço → Settings → Networking:
+  - Adicione porta TCP: 1935  (RTMP — para o OBS)
+  - Adicione porta TCP: 8888  (HLS — para o player)
+  - Adicione porta TCP: 9997  (API — opcional)
 
-**HTTP público (HLS):**
-- Já criado automaticamente → `nexusfilm-rtmp-production.up.railway.app`
-- Aponta para Port 8888 (ou o $PORT que o Railway definir)
+O Railway vai gerar URLs públicas tipo:
+  rtmp://seu-projeto.railway.app:1935/live
+  http://seu-projeto.railway.app:8888
 
-**TCP Proxy (RTMP para OBS):**
-- Clique "Generate Domain" em TCP
-- Vai gerar algo como `mainline.proxy.rlwy.net:43856 → :1935`
-- ⚠️ A porta destino (→ :1935) deve ser IGUAL ao valor de RTMP_PORT
+### 4. Configure no NexusFilm
+No arquivo /js/config.js, adicione:
+  RTMP_SERVER: 'rtmp://seu-projeto.railway.app:1935',
+  HLS_SERVER:  'http://seu-projeto.railway.app:8888',
 
-### 5. Atualizar o config.js do NexusFilm
-```js
-RTMP_SERVER: 'mainline.proxy.rlwy.net:43856',  // do TCP Proxy
-HLS_SERVER:  'nexusfilm-rtmp-production.up.railway.app',  // do HTTP
-```
+### 5. Como o streamer usa
+No painel "Fazer Live" do NexusFilm:
+  URL RTMP: rtmp://seu-projeto.railway.app:1935/live
+  Stream Key: (gerada automaticamente pelo NexusFilm, ex: NF-abc123)
 
-### 6. Configurar no OBS Studio
-- Configurações → Transmissão → Personalizado
-- URL: `rtmp://mainline.proxy.rlwy.net:43856/live`
-- Chave: (copiar do painel Fazer Live no NexusFilm)
+No OBS:
+  Configurações → Transmissão → Personalizado
+  URL do servidor: rtmp://seu-projeto.railway.app:1935/live
+  Chave de transmissão: NF-abc123 (a que aparece no NexusFilm)
 
-### Verificar se está funcionando
-Acesse no browser:
-`https://nexusfilm-rtmp-production.up.railway.app/` 
-Deve aparecer uma página do MediaMTX.
+A URL HLS para assistir fica:
+  http://seu-projeto.railway.app:8888/NF-abc123/index.m3u8
 
-### Problema: "Falha ao conectar" no OBS
-Causas comuns:
-1. RTMP_PORT diferente da porta destino do TCP Proxy
-2. O serviço no Railway ainda está fazendo deploy
-3. Plano Railway sem suporte TCP (upgrade necessário)
+---
+
+## Alternativa: Fly.io (também grátis)
+https://fly.io — tem plano gratuito generoso
+fly launch --dockerfile Dockerfile
+
+## Importante sobre CORS
+O servidor HLS precisa ter CORS liberado para o domínio nexusfilm.netlify.app
+O mediamtx já libera CORS por padrão para GET requests no HLS.

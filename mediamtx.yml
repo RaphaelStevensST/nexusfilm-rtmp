@@ -8,3 +8,14 @@ hlsAllowOrigins: ['*']
 rtmpAddress: :1935
 paths:
   all_others:
+    runOnPublish: >-
+      curl -s -X POST
+      https://nexusfilm.netlify.app/.netlify/functions/stream-webhook
+      -H "Content-Type: application/json"
+      -d "{\"action\":\"publish\",\"event\":\"ready\",\"path\":\"$MTX_PATH\"}"
+    runOnPublishRestart: no
+    runOnUnpublish: >-
+      curl -s -X POST
+      https://nexusfilm.netlify.app/.netlify/functions/stream-webhook
+      -H "Content-Type: application/json"
+      -d "{\"action\":\"publish\",\"event\":\"unready\",\"path\":\"$MTX_PATH\"}"
