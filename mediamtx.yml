@@ -1,10 +1,9 @@
 logLevel: info
 logDestinations: [stdout]
 hlsAddress: :8888
-hlsVariant: lowLatency
-hlsSegmentCount: 3
-hlsSegmentDuration: 1s
-hlsPartDuration: 200ms
+hlsVariant: fmp4
+hlsSegmentCount: 7
+hlsSegmentDuration: 2s
 hlsAllowOrigins: ['*']
 rtmpAddress: :1935
 paths:
