@@ -1,7 +1,5 @@
 logLevel: info
 logDestinations: [stdout]
-
-# HLS — porta substituida pelo $PORT do Railway no start.sh
 hlsAddress: :8888
 hlsEncryption: no
 hlsVariant: lowLatency
@@ -9,16 +7,11 @@ hlsSegmentCount: 3
 hlsSegmentDuration: 1s
 hlsPartDuration: 200ms
 hlsAllowOrigin: "*"
-
-# RTMP — porta substituida por $RTMP_PORT no start.sh (default 1935)
 rtmpAddress: :1935
 rtmpEncryption: no
-
-# Desligar o que não usa
 rtsp: no
 webrtc: no
 srt: no
 api: no
-
 paths:
   all_others:
