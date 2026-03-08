@@ -4,4 +4,5 @@ COPY start.sh /start.sh
 RUN chmod +x /start.sh
 EXPOSE 8888
 EXPOSE 1935
+ENTRYPOINT []
 CMD ["/bin/sh", "/start.sh"]
