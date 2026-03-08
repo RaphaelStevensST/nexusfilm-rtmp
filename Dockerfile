@@ -1,7 +1,15 @@
-FROM bluenviron/mediamtx:latest
+FROM bluenviron/mediamtx:latest-ffmpeg
+
+# Copiar configs
 COPY mediamtx.yml /mediamtx.yml
-# RTMP: OBS envia para esta porta (precisa TCP proxy no Railway)
-EXPOSE 1935
-# HLS: Railway expõe automaticamente como HTTPS público
+COPY start.sh /start.sh
+
+# Dar permissão de execução
+RUN chmod +x /start.sh
+
+# Railway vai expor $PORT automaticamente (HLS)
+# TCP Proxy vai expor 1935 (RTMP para OBS)
 EXPOSE 8888
-CMD ["/mediamtx", "/mediamtx.yml"]
+EXPOSE 1935
+
+CMD ["/start.sh"]

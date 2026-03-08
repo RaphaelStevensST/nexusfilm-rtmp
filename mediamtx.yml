@@ -1,16 +1,7 @@
-# NexusFilm RTMP Server — Railway (1 porta só)
-# RTMP entra na porta 1935 (TCP proxy do Railway)
-# HLS sai na porta 8888 HTTP (Railway expõe como HTTPS automático)
-
 logLevel: info
 logDestinations: [stdout]
 
-# ── RTMP (OBS envia aqui) ─────────────────────────────────────
-rtmpAddress: :1935
-rtmpEncryption: no
-
-# ── HLS (NexusFilm lê aqui — Railway expõe via HTTPS) ────────
-hls: yes
+# Railway injeta a PORT automaticamente via env — usar porta 8888 para HLS HTTP
 hlsAddress: :8888
 hlsEncryption: no
 hlsVariant: lowLatency
@@ -19,16 +10,15 @@ hlsSegmentDuration: 1s
 hlsPartDuration: 200ms
 hlsAllowOrigin: "*"
 
-# ── Desabilitar o que não usa ─────────────────────────────────
+# RTMP na porta 1935
+rtmpAddress: :1935
+rtmpEncryption: no
+
+# Desligar o que não usa
 rtsp: no
-rtsps: no
 webrtc: no
 srt: no
+api: no
 
-# ── API interna ───────────────────────────────────────────────
-api: yes
-apiAddress: :9997
-
-# ── Aceita qualquer stream key ────────────────────────────────
 paths:
   all_others:
