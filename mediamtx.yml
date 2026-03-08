@@ -1,11 +1,16 @@
 logLevel: info
 logDestinations: [stdout]
+
 hlsAddress: :8888
 hlsVariant: lowLatency
 hlsSegmentCount: 3
 hlsSegmentDuration: 1s
 hlsPartDuration: 200ms
 hlsAllowOrigin: '*'
+hlsEncryption: no
+hlsTrustedProxies: []
+
 rtmpAddress: :1935
+
 paths:
   all_others:
