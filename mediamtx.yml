@@ -1,0 +1,40 @@
+# ============================================================
+# NexusFilm — Servidor RTMP (mediamtx)
+# Deploy grátis no Railway: railway.app
+# ============================================================
+
+# Endereços de escuta
+rtspAddress: :8554
+rtmpAddress: :1935
+hlsAddress: :8888
+webRTCAddress: :8889
+srtAddress: :8890
+
+# API de controle (para verificar streams ativos)
+api: yes
+apiAddress: :9997
+
+# Log level
+logLevel: info
+logDestinations: [stdout]
+
+# HLS — gera o .m3u8 que o NexusFilm vai ler
+hls: yes
+hlsVariant: lowLatency
+hlsSegmentCount: 3
+hlsSegmentDuration: 1s
+hlsPartDuration: 200ms
+
+# Permite qualquer stream key (NexusFilm valida pelo Supabase)
+paths:
+  all:
+    source: publisher
+    # Qualquer OBS pode publicar com qualquer stream key
+    publishUser: ""
+    publishPass: ""
+    readUser: ""
+    readPass: ""
+    record: no
+    # Depois de 30s sem publisher, marca como offline
+    runOnPublish: ""
+    runOnPublishRestart: no
