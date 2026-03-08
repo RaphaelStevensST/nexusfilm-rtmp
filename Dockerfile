@@ -1,13 +1,7 @@
 FROM bluenviron/mediamtx:latest
-
-# Copiar configuração customizada
 COPY mediamtx.yml /mediamtx.yml
-
-# Portas
-# 1935 = RTMP (OBS envia aqui)
-# 8888 = HLS  (NexusFilm lê aqui)
-# 9997 = API  (verificar streams ativos)
-EXPOSE 1935 8888 8889 9997
-
-# Comando padrão do mediamtx
+# RTMP: OBS envia para esta porta (precisa TCP proxy no Railway)
+EXPOSE 1935
+# HLS: Railway expõe automaticamente como HTTPS público
+EXPOSE 8888
 CMD ["/mediamtx", "/mediamtx.yml"]

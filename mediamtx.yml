@@ -1,40 +1,34 @@
-# ============================================================
-# NexusFilm — Servidor RTMP (mediamtx)
-# Deploy grátis no Railway: railway.app
-# ============================================================
+# NexusFilm RTMP Server — Railway (1 porta só)
+# RTMP entra na porta 1935 (TCP proxy do Railway)
+# HLS sai na porta 8888 HTTP (Railway expõe como HTTPS automático)
 
-# Endereços de escuta
-rtspAddress: :8554
-rtmpAddress: :1935
-hlsAddress: :8888
-webRTCAddress: :8889
-srtAddress: :8890
-
-# API de controle (para verificar streams ativos)
-api: yes
-apiAddress: :9997
-
-# Log level
 logLevel: info
 logDestinations: [stdout]
 
-# HLS — gera o .m3u8 que o NexusFilm vai ler
+# ── RTMP (OBS envia aqui) ─────────────────────────────────────
+rtmpAddress: :1935
+rtmpEncryption: no
+
+# ── HLS (NexusFilm lê aqui — Railway expõe via HTTPS) ────────
 hls: yes
+hlsAddress: :8888
+hlsEncryption: no
 hlsVariant: lowLatency
 hlsSegmentCount: 3
 hlsSegmentDuration: 1s
 hlsPartDuration: 200ms
+hlsAllowOrigin: "*"
 
-# Permite qualquer stream key (NexusFilm valida pelo Supabase)
+# ── Desabilitar o que não usa ─────────────────────────────────
+rtsp: no
+rtsps: no
+webrtc: no
+srt: no
+
+# ── API interna ───────────────────────────────────────────────
+api: yes
+apiAddress: :9997
+
+# ── Aceita qualquer stream key ────────────────────────────────
 paths:
-  all:
-    source: publisher
-    # Qualquer OBS pode publicar com qualquer stream key
-    publishUser: ""
-    publishPass: ""
-    readUser: ""
-    readPass: ""
-    record: no
-    # Depois de 30s sem publisher, marca como offline
-    runOnPublish: ""
-    runOnPublishRestart: no
+  all_others:
